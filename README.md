@@ -1,4 +1,11 @@
-# `Repair-PowerShellGetModuleRoleCapabilities.ps1`
+# Installation
+The script is packaged in the [PowerShellGallery](https://www.powershellgallery.com/packages/Repair-PowerShellGetModuleRoleCapabilities/):
+
+```powershell
+Install-Script -Name Repair-PowerShellGetModuleRoleCapabilities
+```
+
+## `Repair-PowerShellGetModuleRoleCapabilities.ps1`
 Hacks a fix to JEA role capability searching in versioned PowerShell modules.
 
 ### Issue
@@ -33,3 +40,12 @@ immediately so there is no delay there.
 
 The script can aslo be invoked with `-NoMonitor` to just apply the symlinks one time, without using watchers and running
 in an infinite loop. This can be used if you want to schedule the script to run at your own interval or run it one-off.
+
+## Known Issues
+
+* Paths are not well-sanitized or normalized. It's possible to add duplicate watchers by adding different looking paths
+  to the path var even though they are the same (trailing slash, 8.3 names, etc.). This could cause issues with target
+  detection in the symlink. In general, it's unlikely you'll run into path issues, but it's a possibility.
+* Despite listening to the filesystem for changes, any change within a path causes that entire path to be re-scanned.
+  This actually helps with the above issue because of the paths checked are enumerated rather than built. This is unlikely
+  to cause a problem unless you have very frequent changes to modules.
